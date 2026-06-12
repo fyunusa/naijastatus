@@ -4,6 +4,7 @@
  */
 
 import { getServices, getOverallHealth, getServiceCount, getReportsCount, reportIssue, searchServices } from './statusEngine.js';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 let activeCategory = 'all';
 let selectedService = null;
@@ -31,7 +32,7 @@ export function renderCards() {
     if (service.category === 'banks') targetGrid = grids.banks;
     else if (service.category === 'isps') targetGrid = grids.isps;
     else if (service.category === 'rides') targetGrid = grids.rides;
-    else targetGrid = grids.utilities; // utilities, betting, government all go here
+    else targetGrid = grids.utilities; // utilities, government all go here
 
     const card = document.createElement('div');
     card.className = 'status-card reveal';
@@ -163,8 +164,8 @@ function filterByCategory(category) {
     Object.values(sections).forEach((s) => (s.style.display = ''));
   } else {
     Object.entries(sections).forEach(([key, section]) => {
-      // Betting and government are in utilities section
-      if (category === 'betting' || category === 'government') {
+      // Government is in utilities section
+      if (category === 'government') {
         section.style.display = key === 'utilities' ? '' : 'none';
       } else {
         section.style.display = key === category ? '' : 'none';
@@ -174,12 +175,15 @@ function filterByCategory(category) {
 
   // Smooth scroll to section
   if (category !== 'all') {
-    const targetId = category === 'betting' || category === 'government' ? 'utilities' : category;
+    const targetId = category === 'government' ? 'utilities' : category;
     const target = document.getElementById(targetId);
     if (target) {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
+
+  // Refresh ScrollTrigger so that GSAP recalculates scroll points for visual reveals
+  ScrollTrigger.refresh();
 }
 
 /**

@@ -31,8 +31,6 @@ const SERVICES = [
   // Utilities & Portals
   { id: 'ikedc', name: 'IKEDC', category: 'utilities', logo: '/logos/ikedc.svg', successRate: 80, latency: 400, status: 'degraded' },
   { id: 'ekedc', name: 'EKEDC', category: 'utilities', logo: '/logos/ekedc.svg', successRate: 78, latency: 450, status: 'degraded' },
-  { id: 'bet9ja', name: 'Bet9ja', category: 'betting', logo: '/logos/bet9ja.svg', successRate: 95, latency: 130, status: 'operational' },
-  { id: 'sportybet', name: 'SportyBet', category: 'betting', logo: '/logos/sportybet.svg', successRate: 97, latency: 100, status: 'operational' },
   { id: 'jamb', name: 'JAMB', category: 'government', logo: '/logos/jamb.svg', successRate: 70, latency: 600, status: 'outage' },
   { id: 'nysc', name: 'NYSC', category: 'government', logo: '/logos/nysc.svg', successRate: 85, latency: 350, status: 'degraded' },
 ];
