@@ -1,12 +1,134 @@
 [
-  { "id": "mtn", "name": "MTN", "category": "isps", "logo": "/logos/mtn.svg", "successRate": 92, "latency": 45, "status": "operational" },
-  { "id": "airtel", "name": "Airtel", "category": "isps", "logo": "/logos/airtel.svg", "successRate": 88, "latency": 62, "status": "degraded" },
-  { "id": "glo", "name": "Glo", "category": "isps", "logo": "/logos/glo.svg", "successRate": 75, "latency": 110, "status": "degraded" },
-  { "id": "9mobile", "name": "9mobile", "category": "isps", "logo": "/logos/9mobile.svg", "successRate": 82, "latency": 85, "status": "degraded" },
-  { "id": "starlink", "name": "Starlink", "category": "isps", "logo": "/logos/starlink.svg", "successRate": 99, "latency": 25, "status": "operational" },
-  { "id": "spectranet", "name": "Spectranet", "category": "isps", "logo": "/logos/spectranet.svg", "successRate": 90, "latency": 55, "status": "operational" },
-  { "id": "ipnx", "name": "ipNX Fiber", "category": "isps", "logo": "/logos/ipnx.svg", "successRate": 94, "latency": 35, "status": "operational" },
-  { "id": "smile", "name": "Smile LTE", "category": "isps", "logo": "/logos/smile.svg", "successRate": 85, "latency": 70, "status": "degraded" },
-  { "id": "fiberone", "name": "FiberOne", "category": "isps", "logo": "/logos/fiberone.svg", "successRate": 91, "latency": 40, "status": "operational" },
-  { "id": "tizeti", "name": "Tizeti", "category": "isps", "logo": "/logos/tizeti.svg", "successRate": 80, "latency": 95, "status": "degraded" }
+  {
+    "id": "mtn",
+    "name": "MTN",
+    "category": "isps",
+    "logo": "/logos/mtn.svg",
+    "successRate": 92,
+    "latency": 45,
+    "status": "operational",
+    "sectors": [
+      { "name": "4G LTE Network", "status": "operational", "detail": "Strong signal coverage" },
+      { "name": "5G Network", "status": "operational", "detail": "Active in major cities" },
+      { "name": "Fibre Broadband", "status": "degraded", "detail": "Fiber cut on main route" }
+    ]
+  },
+  {
+    "id": "airtel",
+    "name": "Airtel",
+    "category": "isps",
+    "logo": "/logos/airtel.svg",
+    "successRate": 88,
+    "latency": 62,
+    "status": "degraded",
+    "sectors": [
+      { "name": "4G LTE Network", "status": "operational", "detail": "Normal operations" },
+      { "name": "5G Network", "status": "degraded", "detail": "Core network latency" },
+      { "name": "Fibre Broadband", "status": "operational", "detail": "Stable" }
+    ]
+  },
+  {
+    "id": "glo",
+    "name": "Glo",
+    "category": "isps",
+    "logo": "/logos/glo.svg",
+    "successRate": 75,
+    "latency": 110,
+    "status": "degraded",
+    "sectors": [
+      { "name": "4G LTE Network", "status": "degraded", "detail": "High traffic congestion" },
+      { "name": "5G Network", "status": "degraded", "detail": "Limited coverage" },
+      { "name": "Fibre Broadband", "status": "operational", "detail": "Stable" }
+    ]
+  },
+  {
+    "id": "9mobile",
+    "name": "9mobile",
+    "category": "isps",
+    "logo": "/logos/9mobile.svg",
+    "successRate": 82,
+    "latency": 85,
+    "status": "degraded",
+    "sectors": [
+      { "name": "4G LTE Network", "status": "degraded", "detail": "Station power issues" },
+      { "name": "5G Network", "status": "outage", "detail": "Service not launched yet" }
+    ]
+  },
+  {
+    "id": "starlink",
+    "name": "Starlink",
+    "category": "isps",
+    "logo": "/logos/starlink.svg",
+    "successRate": 99,
+    "latency": 25,
+    "status": "operational",
+    "sectors": [
+      { "name": "Satellite Space Link", "status": "operational", "detail": "Excellent line of sight" },
+      { "name": "Ground Station Link", "status": "operational", "detail": "Normal gateway ping" }
+    ]
+  },
+  {
+    "id": "spectranet",
+    "name": "Spectranet",
+    "category": "isps",
+    "logo": "/logos/spectranet.svg",
+    "successRate": 90,
+    "latency": 55,
+    "status": "operational",
+    "sectors": [
+      { "name": "4G LTE Network", "status": "operational", "detail": "Normal" },
+      { "name": "Fibre Broadband", "status": "operational", "detail": "Normal" }
+    ]
+  },
+  {
+    "id": "ipnx",
+    "name": "ipNX Fiber",
+    "category": "isps",
+    "logo": "/logos/ipnx.svg",
+    "successRate": 94,
+    "latency": 35,
+    "status": "operational",
+    "sectors": [
+      { "name": "Home FTTH", "status": "operational", "detail": "Stable connection" },
+      { "name": "Business Fiber", "status": "operational", "detail": "Stable connection" }
+    ]
+  },
+  {
+    "id": "smile",
+    "name": "Smile LTE",
+    "category": "isps",
+    "logo": "/logos/smile.svg",
+    "successRate": 85,
+    "latency": 70,
+    "status": "degraded",
+    "sectors": [
+      { "name": "4G LTE Network", "status": "degraded", "detail": "High packet loss" },
+      { "name": "SmileVoice VoLTE", "status": "operational", "detail": "Normal voice" }
+    ]
+  },
+  {
+    "id": "fiberone",
+    "name": "FiberOne",
+    "category": "isps",
+    "logo": "/logos/fiberone.svg",
+    "successRate": 91,
+    "latency": 40,
+    "status": "operational",
+    "sectors": [
+      { "name": "FTTH Broadband", "status": "operational", "detail": "Normal operations" }
+    ]
+  },
+  {
+    "id": "tizeti",
+    "name": "Tizeti",
+    "category": "isps",
+    "logo": "/logos/tizeti.svg",
+    "successRate": 80,
+    "latency": 95,
+    "status": "degraded",
+    "sectors": [
+      { "name": "Wifi Broadband", "status": "degraded", "detail": "Power backup fault at node" },
+      { "name": "Fibre Link", "status": "operational", "detail": "Stable" }
+    ]
+  }
 ]

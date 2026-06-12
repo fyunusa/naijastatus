@@ -121,6 +121,39 @@ function openBottomSheet(service) {
   document.getElementById('sheet-service-name').textContent = service.name;
   document.getElementById('sheet-service-category').textContent = service.category;
 
+  // Render sector status details
+  const sectorsContainer = document.getElementById('sheet-sectors-container');
+  const sectorsGrid = document.getElementById('sheet-sectors-grid');
+  sectorsGrid.innerHTML = '';
+
+  if (service.sectors && service.sectors.length > 0) {
+    sectorsContainer.style.display = 'block';
+    service.sectors.forEach(sector => {
+      const item = document.createElement('div');
+      item.style.cssText = 'display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius-md); box-shadow: 0 3px 0 var(--border);';
+      
+      const statusClass = sector.status; // operational, degraded, outage
+      const statusLabel = sector.status === 'operational' ? 'Operational' : sector.status === 'degraded' ? 'Degraded' : 'Outage';
+      const dotColor = sector.status === 'operational' ? 'var(--status-green)' : sector.status === 'degraded' ? 'var(--status-yellow)' : 'var(--status-red)';
+      const badgeBg = sector.status === 'operational' ? 'rgba(88, 204, 2, 0.12)' : sector.status === 'degraded' ? 'rgba(255, 200, 0, 0.12)' : 'rgba(255, 75, 75, 0.12)';
+      const badgeTextColor = sector.status === 'operational' ? 'var(--status-green)' : sector.status === 'degraded' ? 'var(--status-yellow-shadow)' : 'var(--status-red)';
+
+      item.innerHTML = `
+        <div style="display: flex; flex-direction: column; gap: 2px; text-align: left;">
+          <span style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary);">${sector.name}</span>
+          ${sector.detail ? `<span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600;">${sector.detail}</span>` : ''}
+        </div>
+        <div class="card-status-badge ${statusClass}" style="background: ${badgeBg}; color: ${badgeTextColor}; margin: 0; padding: 4px 10px; font-size: 0.65rem;">
+          <span class="badge-dot" style="background: ${dotColor};"></span>
+          ${statusLabel}
+        </div>
+      `;
+      sectorsGrid.appendChild(item);
+    });
+  } else {
+    sectorsContainer.style.display = 'none';
+  }
+
   document.querySelectorAll('.report-option').forEach((btn) => btn.classList.remove('selected'));
   document.getElementById('report-details').value = '';
 

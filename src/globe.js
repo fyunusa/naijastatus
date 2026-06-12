@@ -1,6 +1,6 @@
 /**
  * NaijaStatus — 3D Globe Module
- * Interactive Three.js globe via Globe.gl focused on Nigeria
+ * Interactive Three.js globe via Globe.gl focused on Nigeria's 36 states
  */
 
 import * as THREE from 'three';
@@ -12,29 +12,6 @@ export function initGlobe() {
   // Dynamically import Globe.gl
   import('globe.gl').then(({ default: Globe }) => {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-
-    // Nigerian city coordinates
-    const cities = [
-      { name: 'Lagos', lat: 6.5244, lng: 3.3792, size: 0.8 },
-      { name: 'Abuja', lat: 9.0579, lng: 7.4951, size: 0.7 },
-      { name: 'Port Harcourt', lat: 4.8156, lng: 7.0498, size: 0.5 },
-      { name: 'Kano', lat: 12.0022, lng: 8.5920, size: 0.6 },
-      { name: 'Ibadan', lat: 7.3775, lng: 3.9470, size: 0.4 },
-      { name: 'Enugu', lat: 6.4584, lng: 7.5464, size: 0.35 },
-      { name: 'Kaduna', lat: 10.5105, lng: 7.4165, size: 0.35 },
-      { name: 'Benin City', lat: 6.3350, lng: 5.6037, size: 0.35 },
-    ];
-
-    // Network arcs (simulated connections)
-    const arcs = [
-      { startLat: 6.5244, startLng: 3.3792, endLat: 9.0579, endLng: 7.4951, color: ['#58CC02', '#1CB0F6'] },
-      { startLat: 6.5244, startLng: 3.3792, endLat: 4.8156, endLng: 7.0498, color: ['#58CC02', '#FFC800'] },
-      { startLat: 9.0579, startLng: 7.4951, endLat: 12.0022, endLng: 8.5920, color: ['#1CB0F6', '#58CC02'] },
-      { startLat: 6.5244, startLng: 3.3792, endLat: 7.3775, endLng: 3.9470, color: ['#58CC02', '#58CC02'] },
-      { startLat: 9.0579, startLng: 7.4951, endLat: 6.4584, endLng: 7.5464, color: ['#1CB0F6', '#FFC800'] },
-      { startLat: 4.8156, startLng: 7.0498, endLat: 6.3350, endLng: 5.6037, color: ['#FFC800', '#58CC02'] },
-      { startLat: 12.0022, startLng: 8.5920, endLat: 10.5105, endLng: 7.4165, color: ['#58CC02', '#1CB0F6'] },
-    ];
 
     // Create glassy transparent globe material
     const globeMaterial = new THREE.MeshPhongMaterial({
@@ -68,17 +45,15 @@ export function initGlobe() {
         </div>
       `)
       
-      // Points (cities)
-      .pointsData(cities)
+      // Points (Nigeria States Centroids)
       .pointLat('lat')
       .pointLng('lng')
       .pointAltitude(0.02) // Layered slightly above polygon
-      .pointRadius((d) => d.size * 0.3)
+      .pointRadius(() => 0.12) // Sized nicely for 37 nodes
       .pointColor(() => '#1CB0F6') // Neon blue for contrast
       .pointResolution(12)
       
       // Arcs (network connections)
-      .arcsData(arcs)
       .arcStartLat('startLat')
       .arcStartLng('startLng')
       .arcEndLat('endLat')
@@ -88,26 +63,66 @@ export function initGlobe() {
       .arcDashGap(0.2)
       .arcDashAnimateTime(1500)
       .arcStroke(0.6)
+      .arcAltitude(0.08)
       
-      // Labels (city names)
-      .labelsData(cities)
+      // Labels (state names)
       .labelLat('lat')
       .labelLng('lng')
       .labelText('name')
-      .labelSize(1.2)
+      .labelSize(0.7) // Small size to prevent clutter across 37 states
       .labelColor(() => isDark ? '#ECEFF1' : '#3C3C3C')
       .labelResolution(2)
       .labelAltitude(0.025) // Layered above points
-      .labelDotRadius(0.3)
+      .labelDotRadius(0.15)
       (container);
 
-    // Fetch and apply Nigeria States GeoJSON
-    fetch('/nigeria-states.geojson')
-      .then((res) => res.json())
-      .then((geojson) => {
-        globe.polygonsData(geojson.features);
-      })
-      .catch((err) => console.warn('Failed to load nigeria-states.geojson:', err));
+    // Fetch and apply Nigeria States GeoJSON & states coordinates list
+    Promise.all([
+      fetch('/nigeria-states.geojson').then((res) => res.json()),
+      fetch('/data/states.json').then((res) => res.json())
+    ])
+    .then(([geojson, states]) => {
+      // Set Polygons
+      globe.polygonsData(geojson.features);
+
+      // Set Points (using state centroids)
+      globe.pointsData(states);
+
+      // Set Labels (state names)
+      globe.labelsData(states);
+
+      // Create simulated connections between states dynamically
+      const arcConnections = [
+        { from: 'Lagos', to: 'Federal Capital Territory', color: ['#58CC02', '#1CB0F6'] },
+        { from: 'Lagos', to: 'Rivers', color: ['#58CC02', '#FFC800'] },
+        { from: 'Federal Capital Territory', to: 'Kano', color: ['#1CB0F6', '#58CC02'] },
+        { from: 'Lagos', to: 'Oyo', color: ['#58CC02', '#58CC02'] },
+        { from: 'Federal Capital Territory', to: 'Enugu', color: ['#1CB0F6', '#FFC800'] },
+        { from: 'Rivers', to: 'Edo', color: ['#FFC800', '#58CC02'] },
+        { from: 'Kano', to: 'Kaduna', color: ['#58CC02', '#1CB0F6'] },
+        { from: 'Oyo', to: 'Kaduna', color: ['#58CC02', '#1CB0F6'] },
+        { from: 'Delta', to: 'Lagos', color: ['#FFC800', '#58CC02'] },
+        { from: 'Borno', to: 'Federal Capital Territory', color: ['#FFC800', '#1CB0F6'] }
+      ];
+
+      const arcs = [];
+      arcConnections.forEach(conn => {
+        const fromState = states.find(s => s.name === conn.from);
+        const toState = states.find(s => s.name === conn.to);
+        if (fromState && toState) {
+          arcs.push({
+            startLat: fromState.lat,
+            startLng: fromState.lng,
+            endLat: toState.lat,
+            endLng: toState.lng,
+            color: conn.color
+          });
+        }
+      });
+
+      globe.arcsData(arcs);
+    })
+    .catch((err) => console.warn('Failed to load geographic datasets:', err));
 
     // Focus on Nigeria (zoomed in closer from 2.5 to 1.45)
     globe.pointOfView({ lat: 9.08, lng: 8.68, altitude: 1.45 }, 2000);

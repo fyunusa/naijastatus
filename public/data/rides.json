@@ -1,7 +1,66 @@
 [
-  { "id": "bolt", "name": "Bolt", "category": "rides", "logo": "/logos/bolt.svg", "successRate": 93, "latency": 200, "status": "operational" },
-  { "id": "uber", "name": "Uber", "category": "rides", "logo": "/logos/uber.svg", "successRate": 96, "latency": 150, "status": "operational" },
-  { "id": "indrive", "name": "InDrive", "category": "rides", "logo": "/logos/indrive.svg", "successRate": 89, "latency": 250, "status": "degraded" },
-  { "id": "rida", "name": "Rida", "category": "rides", "logo": "/logos/rida.svg", "successRate": 92, "latency": 180, "status": "operational" },
-  { "id": "lagride", "name": "LagRide", "category": "rides", "logo": "/logos/lagride.svg", "successRate": 90, "latency": 210, "status": "operational" }
+  {
+    "id": "bolt",
+    "name": "Bolt",
+    "category": "rides",
+    "logo": "/logos/bolt.svg",
+    "successRate": 93,
+    "latency": 200,
+    "status": "operational",
+    "sectors": [
+      { "name": "Driver Match", "status": "operational", "detail": "Available drivers high" },
+      { "name": "Card Payments", "status": "operational", "detail": "Gateways running fine" },
+      { "name": "Map & Navigation", "status": "operational", "detail": "Normal GPS ping" }
+    ]
+  },
+  {
+    "id": "uber",
+    "name": "Uber",
+    "category": "rides",
+    "logo": "/logos/uber.svg",
+    "successRate": 96,
+    "latency": 150,
+    "status": "operational",
+    "sectors": [
+      { "name": "Driver Match", "status": "operational", "detail": "Operational" },
+      { "name": "Card Payments", "status": "operational", "detail": "Operational" }
+    ]
+  },
+  {
+    "id": "indrive",
+    "name": "InDrive",
+    "category": "rides",
+    "logo": "/logos/indrive.svg",
+    "successRate": 89,
+    "latency": 250,
+    "status": "degraded",
+    "sectors": [
+      { "name": "Driver Matching", "status": "degraded", "detail": "Handshake delays on bids" },
+      { "name": "Map & Routing", "status": "operational", "detail": "Normal" }
+    ]
+  },
+  {
+    "id": "rida",
+    "name": "Rida",
+    "category": "rides",
+    "logo": "/logos/rida.svg",
+    "successRate": 92,
+    "latency": 180,
+    "status": "operational",
+    "sectors": [
+      { "name": "Driver Matching", "status": "operational", "detail": "Normal" }
+    ]
+  },
+  {
+    "id": "lagride",
+    "name": "LagRide",
+    "category": "rides",
+    "logo": "/logos/lagride.svg",
+    "successRate": 90,
+    "latency": 210,
+    "status": "operational",
+    "sectors": [
+      { "name": "Driver Matching", "status": "operational", "detail": "Normal" }
+    ]
+  }
 ]

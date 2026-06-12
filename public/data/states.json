@@ -1,0 +1,187 @@
+[
+  {
+    "name": "Abia",
+    "lat": 5.4322,
+    "lng": 7.5165
+  },
+  {
+    "name": "Adamawa",
+    "lat": 9.5924,
+    "lng": 12.5115
+  },
+  {
+    "name": "Akwa Ibom",
+    "lat": 4.8245,
+    "lng": 8.0439
+  },
+  {
+    "name": "Anambra",
+    "lat": 6.1226,
+    "lng": 6.9808
+  },
+  {
+    "name": "Bauchi",
+    "lat": 10.9545,
+    "lng": 9.9696
+  },
+  {
+    "name": "Bayelsa",
+    "lat": 4.7993,
+    "lng": 6.0734
+  },
+  {
+    "name": "Benue",
+    "lat": 7.0773,
+    "lng": 8.6146
+  },
+  {
+    "name": "Borno",
+    "lat": 11.8666,
+    "lng": 13.048
+  },
+  {
+    "name": "Cross River",
+    "lat": 5.5102,
+    "lng": 8.5282
+  },
+  {
+    "name": "Delta",
+    "lat": 5.711,
+    "lng": 5.8548
+  },
+  {
+    "name": "Ebonyi",
+    "lat": 6.2335,
+    "lng": 8.0423
+  },
+  {
+    "name": "Edo",
+    "lat": 6.7268,
+    "lng": 5.8113
+  },
+  {
+    "name": "Ekiti",
+    "lat": 7.7076,
+    "lng": 5.3415
+  },
+  {
+    "name": "Enugu",
+    "lat": 6.5636,
+    "lng": 7.4001
+  },
+  {
+    "name": "Federal Capital Territory",
+    "lat": 8.9335,
+    "lng": 7.2681
+  },
+  {
+    "name": "Gombe",
+    "lat": 10.4772,
+    "lng": 11.2549
+  },
+  {
+    "name": "Imo",
+    "lat": 5.5985,
+    "lng": 7.162
+  },
+  {
+    "name": "Jigawa",
+    "lat": 12.0389,
+    "lng": 9.4845
+  },
+  {
+    "name": "Kaduna",
+    "lat": 10.3873,
+    "lng": 7.5415
+  },
+  {
+    "name": "Kano",
+    "lat": 11.8026,
+    "lng": 8.7026
+  },
+  {
+    "name": "Katsina",
+    "lat": 12.3045,
+    "lng": 7.723
+  },
+  {
+    "name": "Kebbi",
+    "lat": 11.5254,
+    "lng": 4.876
+  },
+  {
+    "name": "Kogi",
+    "lat": 7.6904,
+    "lng": 6.4622
+  },
+  {
+    "name": "Kwara",
+    "lat": 8.8727,
+    "lng": 4.4085
+  },
+  {
+    "name": "Lagos",
+    "lat": 6.522,
+    "lng": 3.5782
+  },
+  {
+    "name": "Nasarawa",
+    "lat": 8.6708,
+    "lng": 8.5491
+  },
+  {
+    "name": "Niger",
+    "lat": 10.3157,
+    "lng": 5.6982
+  },
+  {
+    "name": "Ogun",
+    "lat": 7.0324,
+    "lng": 3.5075
+  },
+  {
+    "name": "Ondo",
+    "lat": 6.895,
+    "lng": 5.1635
+  },
+  {
+    "name": "Osun",
+    "lat": 7.5623,
+    "lng": 4.5183
+  },
+  {
+    "name": "Oyo",
+    "lat": 7.747,
+    "lng": 3.5291
+  },
+  {
+    "name": "Plateau",
+    "lat": 9.3615,
+    "lng": 9.3629
+  },
+  {
+    "name": "Rivers",
+    "lat": 4.8984,
+    "lng": 6.9788
+  },
+  {
+    "name": "Sokoto",
+    "lat": 12.7412,
+    "lng": 5.1671
+  },
+  {
+    "name": "Taraba",
+    "lat": 8.063,
+    "lng": 10.7365
+  },
+  {
+    "name": "Yobe",
+    "lat": 12.1226,
+    "lng": 11.2396
+  },
+  {
+    "name": "Zamfara",
+    "lat": 11.9599,
+    "lng": 6.3517
+  }
+]
