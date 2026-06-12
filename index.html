@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NaijaStatus — Is Nigeria Online?</title>
+  <meta name="description" content="Real-time status tracker for Nigerian banks, ISPs, ride-hailing, and digital services. Check if GTBank, MTN, Bolt, or any service is down right now." />
+  <meta property="og:title" content="NaijaStatus — Is Nigeria Online?" />
+  <meta property="og:description" content="Real-time status tracker for Nigerian banks, ISPs, ride-hailing, and digital services." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="/" class="navbar-logo" id="navbar-logo">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="16" cy="16" r="14" fill="#58CC02" stroke="#46A302" stroke-width="2"/>
+          <path d="M10 17 L14 21 L22 12" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>NaijaStatus</span>
+      </a>
+      <div class="navbar-actions">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+        <button class="btn-3d btn-3d--small" id="nav-report-btn">REPORT ISSUE</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-heading reveal">
+          Is <span class="accent">Nigeria</span> Online?
+        </h1>
+        <p class="hero-subtitle reveal">
+          Real-time status for banks, ISPs, rides & utilities.
+        </p>
+
+        <div class="search-bar reveal">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-input" placeholder="Search services... (e.g. GTBank, MTN)" autocomplete="off" />
+        </div>
+
+        <div class="hero-stats reveal">
+          <div class="hero-stat">
+            <span class="stat-number" id="overall-health">0%</span>
+            <span class="stat-label">Online</span>
+          </div>
+          <div class="hero-stat">
+            <span class="stat-number" id="services-tracked">0</span>
+            <span class="stat-label">Services</span>
+          </div>
+          <div class="hero-stat">
+            <span class="stat-number" id="reports-today">0</span>
+            <span class="stat-label">Reports</span>
+          </div>
+        </div>
+
+        <div class="hero-actions reveal">
+          <a href="#banks" class="btn-3d">CHECK STATUS</a>
+          <button class="btn-3d btn-3d--outline" id="hero-report-btn">REPORT ISSUE</button>
+        </div>
+      </div>
+
+      <div id="globe-container"></div>
+    </div>
+  </section>
+
+  <!-- Category Bar -->
+  <div class="category-bar" id="category-bar">
+    <div class="container">
+      <div class="category-pills" id="category-pills">
+        <button class="pill active" data-category="all">
+          <span class="pill-icon">📊</span> All
+        </button>
+        <button class="pill" data-category="banks">
+          <span class="pill-icon">🏦</span> Banks
+        </button>
+        <button class="pill" data-category="isps">
+          <span class="pill-icon">📡</span> ISPs
+        </button>
+        <button class="pill" data-category="rides">
+          <span class="pill-icon">🚗</span> Rides
+        </button>
+        <button class="pill" data-category="utilities">
+          <span class="pill-icon">⚡</span> Utilities
+        </button>
+        <button class="pill" data-category="betting">
+          <span class="pill-icon">🎮</span> Betting
+        </button>
+        <button class="pill" data-category="government">
+          <span class="pill-icon">📋</span> Government
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Sections -->
+  <main>
+    <!-- Banks -->
+    <section class="status-section section" id="banks">
+      <div class="container">
+        <h2 class="section-heading reveal">banks & fintech.</h2>
+        <div class="status-grid" id="banks-grid"></div>
+      </div>
+    </section>
+
+    <!-- ISPs -->
+    <section class="status-section section" id="isps">
+      <div class="container">
+        <h2 class="section-heading reveal">ISPs & telcos.</h2>
+        <div class="status-grid" id="isps-grid"></div>
+      </div>
+    </section>
+
+    <!-- Rides -->
+    <section class="status-section section" id="rides">
+      <div class="container">
+        <h2 class="section-heading reveal">ride-hailing & logistics.</h2>
+        <div class="status-grid" id="rides-grid"></div>
+      </div>
+    </section>
+
+    <!-- Utilities -->
+    <section class="status-section section" id="utilities">
+      <div class="container">
+        <h2 class="section-heading reveal">utilities & portals.</h2>
+        <div class="status-grid" id="utilities-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Bottom Sheet Overlay -->
+  <div class="bottom-sheet-overlay" id="sheet-overlay"></div>
+
+  <!-- Bottom Sheet -->
+  <div class="bottom-sheet" id="bottom-sheet">
+    <div class="bottom-sheet-handle"></div>
+    <h3 class="bottom-sheet-title">Report an Issue</h3>
+    <div class="bottom-sheet-service" id="sheet-service">
+      <img src="" alt="" id="sheet-service-logo" />
+      <div>
+        <div class="card-name" id="sheet-service-name"></div>
+        <div class="label" id="sheet-service-category"></div>
+      </div>
+    </div>
+    <div class="report-options">
+      <button class="report-option" id="report-working" data-vote="working">
+        <span class="report-emoji">✅</span>
+        Working Fine
+      </button>
+      <button class="report-option" id="report-issues" data-vote="issues">
+        <span class="report-emoji">❌</span>
+        Having Issues
+      </button>
+    </div>
+    <textarea class="report-textarea" id="report-details" placeholder="Optional: Describe the issue..."></textarea>
+    <button class="btn-3d" id="report-submit" style="width: 100%;">SUBMIT REPORT</button>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">✅ Report submitted! Thank you.</div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-links">
+        <a href="#">About</a>
+        <a href="#">API</a>
+        <a href="#">Contact</a>
+        <a href="#">Twitter/X</a>
+      </div>
+      <p class="footer-tagline">Built for Nigerians 🇳🇬</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
