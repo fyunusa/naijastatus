@@ -1,0 +1,14 @@
+[
+  {
+    "type": "http",
+    "name": "Primary Portal",
+    "url": "https://fob.ng",
+    "weight": 0.50
+  },
+  {
+    "type": "dns",
+    "name": "Nameserver Resolution",
+    "domain": "fob.ng",
+    "weight": 0.50
+  }
+]

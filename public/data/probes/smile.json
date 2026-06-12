@@ -1,0 +1,14 @@
+[
+  {
+    "type": "http",
+    "name": "Primary Portal",
+    "url": "https://smile.com.ng",
+    "weight": 0.50
+  },
+  {
+    "type": "dns",
+    "name": "Nameserver Resolution",
+    "domain": "smile.com.ng",
+    "weight": 0.50
+  }
+]

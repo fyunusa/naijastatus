@@ -100,41 +100,82 @@ async function pingService(service) {
     };
   }
 
-  const start = performance.now();
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
 
   const domain = extractDomain(service.url);
-  const dohUrl = `https://dns.google/resolve?name=${domain}&type=A`;
+
+  // If the service has a specific list of probes (e.g. loaded for an ISP), use it.
+  // Otherwise, construct a default probe basket dynamically.
+  const probes = service.probes || [
+    {
+      type: 'http',
+      name: 'Primary Portal',
+      url: service.url,
+      weight: 0.40
+    },
+    {
+      type: 'dns',
+      name: 'Nameserver Resolution',
+      domain: domain,
+      weight: 0.60
+    }
+  ];
 
   try {
-    // 1. Perform standard CORS-free HTTP reachability check
-    const httpPromise = fetch(service.url, {
-      method: 'GET',
-      mode: 'no-cors',
-      cache: 'no-store',
-      signal: controller.signal
-    }).then(() => true).catch(() => false);
+    const probePromises = probes.map(async (probe) => {
+      const start = performance.now();
+      let success = false;
+      try {
+        if (probe.type === 'http' && probe.url) {
+          await fetch(probe.url, {
+            method: 'GET',
+            mode: 'no-cors',
+            cache: 'no-store',
+            signal: controller.signal
+          });
+          success = true;
+        } else if (probe.type === 'dns' && probe.domain) {
+          const dohUrl = `https://dns.google/resolve?name=${encodeURIComponent(probe.domain)}&type=A`;
+          const res = await fetch(dohUrl, {
+            method: 'GET',
+            cache: 'no-store',
+            signal: controller.signal
+          });
+          if (res.ok) {
+            const data = await res.json();
+            success = data.Status === 0; // 0 = NOERROR
+          }
+        }
+      } catch (e) {
+        // Aborted or fetch failed
+      }
+      const latency = Math.round(performance.now() - start);
+      return { success, latency, weight: probe.weight || 0 };
+    });
 
-    // 2. Perform DNS-over-HTTPS resolution check via Google DNS (CORS-enabled)
-    const dnsPromise = fetch(dohUrl, {
-      method: 'GET',
-      cache: 'no-store',
-      signal: controller.signal
-    }).then(async (res) => {
-      if (!res.ok) return false;
-      const data = await res.json();
-      return data.Status === 0; // 0 = NOERROR
-    }).catch(() => false);
-
-    // Resolve both concurrently
-    const [httpSuccess, dnsSuccess] = await Promise.all([httpPromise, dnsPromise]);
+    const results = await Promise.all(probePromises);
     clearTimeout(timeoutId);
-    
-    const latency = Math.round(performance.now() - start);
 
-    // If both failed, it is an outage
-    if (!httpSuccess && !dnsSuccess) {
+    let totalWeight = 0;
+    let earnedWeight = 0;
+    let latencySum = 0;
+    let successfulCount = 0;
+
+    results.forEach(r => {
+      totalWeight += r.weight;
+      if (r.success) {
+        earnedWeight += r.weight;
+        latencySum += r.latency;
+        successfulCount++;
+      }
+    });
+
+    const score = totalWeight > 0 ? (earnedWeight / totalWeight) : 0;
+    const latency = successfulCount > 0 ? Math.round(latencySum / successfulCount) : 0;
+
+    // If score is 0, it means all checking endpoints failed
+    if (score === 0) {
       return {
         status: 'outage',
         successRate: 0,
@@ -142,15 +183,10 @@ async function pingService(service) {
         sectors: service.sectors.map(sec => ({
           ...sec,
           status: 'outage',
-          detail: 'DNS and HTTP checks failed'
+          detail: 'All check probes failed'
         }))
       };
     }
-
-    // Weighted Confidence Scorer: DNS resolution (60%), HTTP Reachability (40%)
-    let score = 0;
-    if (httpSuccess) score += 0.40;
-    if (dnsSuccess) score += 0.60;
 
     let baseRate = Math.round(score * 100);
 
@@ -291,6 +327,20 @@ export async function initServices() {
       fetch('/data/rides.json').then((r) => r.json()),
       fetch('/data/utilities.json').then((r) => r.json())
     ]);
+
+    // Load custom probe configs for ISPs if available, with robust fallback
+    await Promise.all(isps.map(async (isp) => {
+      try {
+        const res = await fetch(`/data/probes/${isp.id}.json`);
+        if (res.ok) {
+          isp.probes = await res.json();
+        } else {
+          console.warn(`Probe configuration for ${isp.id} not found, using fallback.`);
+        }
+      } catch (err) {
+        console.warn(`Failed to fetch probe configuration for ${isp.id}:`, err);
+      }
+    }));
 
     services = [...banks, ...isps, ...rides, ...utilities];
 

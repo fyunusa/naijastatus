@@ -1,0 +1,14 @@
+[
+  {
+    "type": "http",
+    "name": "Primary Portal",
+    "url": "https://www.airtel.com.ng",
+    "weight": 0.50
+  },
+  {
+    "type": "dns",
+    "name": "Nameserver Resolution",
+    "domain": "airtel.com.ng",
+    "weight": 0.50
+  }
+]

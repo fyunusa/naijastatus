@@ -1,0 +1,20 @@
+[
+  {
+    "type": "http",
+    "name": "Primary Portal",
+    "url": "https://mtn.ng",
+    "weight": 0.35
+  },
+  {
+    "type": "http",
+    "name": "Customer Gateway",
+    "url": "https://mtnonline.com",
+    "weight": 0.15
+  },
+  {
+    "type": "dns",
+    "name": "Nameserver Resolution",
+    "domain": "mtn.ng",
+    "weight": 0.50
+  }
+]

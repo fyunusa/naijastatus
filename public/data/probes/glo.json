@@ -1,0 +1,14 @@
+[
+  {
+    "type": "http",
+    "name": "Primary Portal",
+    "url": "https://www.gloworld.com",
+    "weight": 0.50
+  },
+  {
+    "type": "dns",
+    "name": "Nameserver Resolution",
+    "domain": "gloworld.com",
+    "weight": 0.50
+  }
+]

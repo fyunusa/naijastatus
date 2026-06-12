@@ -1,0 +1,14 @@
+[
+  {
+    "type": "http",
+    "name": "Primary Portal",
+    "url": "https://9mobile.com.ng",
+    "weight": 0.50
+  },
+  {
+    "type": "dns",
+    "name": "Nameserver Resolution",
+    "domain": "9mobile.com.ng",
+    "weight": 0.50
+  }
+]
