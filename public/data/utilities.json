@@ -1,0 +1,10 @@
+[
+  { "id": "ikedc", "name": "IKEDC", "category": "utilities", "logo": "/logos/ikedc.svg", "successRate": 80, "latency": 400, "status": "degraded" },
+  { "id": "ekedc", "name": "EKEDC", "category": "utilities", "logo": "/logos/ekedc.svg", "successRate": 78, "latency": 450, "status": "degraded" },
+  { "id": "aedc", "name": "AEDC", "category": "utilities", "logo": "/logos/aedc.svg", "successRate": 82, "latency": 380, "status": "degraded" },
+  { "id": "jamb", "name": "JAMB Portal", "category": "government", "logo": "/logos/jamb.svg", "successRate": 70, "latency": 600, "status": "outage" },
+  { "id": "nysc", "name": "NYSC Portal", "category": "government", "logo": "/logos/nysc.svg", "successRate": 85, "latency": 350, "status": "degraded" },
+  { "id": "waec", "name": "WAEC Portal", "category": "government", "logo": "/logos/waec.svg", "successRate": 88, "latency": 290, "status": "operational" },
+  { "id": "remita", "name": "Remita", "category": "utilities", "logo": "/logos/remita.svg", "successRate": 94, "latency": 180, "status": "operational" },
+  { "id": "nibss", "name": "NIBSS", "category": "utilities", "logo": "/logos/nibss.svg", "successRate": 96, "latency": 120, "status": "operational" }
+]

@@ -1,0 +1,20 @@
+[
+  { "id": "gtbank", "name": "GTBank", "category": "banks", "logo": "/logos/gtbank.svg", "successRate": 94, "latency": 180, "status": "operational" },
+  { "id": "zenith", "name": "Zenith Bank", "category": "banks", "logo": "/logos/zenith.svg", "successRate": 98, "latency": 120, "status": "operational" },
+  { "id": "access", "name": "Access Bank", "category": "banks", "logo": "/logos/access.svg", "successRate": 91, "latency": 210, "status": "operational" },
+  { "id": "firstbank", "name": "FirstBank", "category": "banks", "logo": "/logos/firstbank.svg", "successRate": 87, "latency": 320, "status": "degraded" },
+  { "id": "uba", "name": "UBA", "category": "banks", "logo": "/logos/uba.svg", "successRate": 96, "latency": 140, "status": "operational" },
+  { "id": "union", "name": "Union Bank", "category": "banks", "logo": "/logos/union.svg", "successRate": 92, "latency": 190, "status": "operational" },
+  { "id": "sterling", "name": "Sterling Bank", "category": "banks", "logo": "/logos/sterling.svg", "successRate": 90, "latency": 220, "status": "operational" },
+  { "id": "wema", "name": "Wema Bank", "category": "banks", "logo": "/logos/wema.svg", "successRate": 89, "latency": 240, "status": "operational" },
+  { "id": "fidelity", "name": "Fidelity Bank", "category": "banks", "logo": "/logos/fidelity.svg", "successRate": 93, "latency": 170, "status": "operational" },
+  { "id": "fcmb", "name": "FCMB", "category": "banks", "logo": "/logos/fcmb.svg", "successRate": 91, "latency": 200, "status": "operational" },
+  { "id": "stanbic", "name": "Stanbic IBTC", "category": "banks", "logo": "/logos/stanbic.svg", "successRate": 95, "latency": 150, "status": "operational" },
+  { "id": "opay", "name": "OPay", "category": "banks", "logo": "/logos/opay.svg", "successRate": 99, "latency": 80, "status": "operational" },
+  { "id": "palmpay", "name": "PalmPay", "category": "banks", "logo": "/logos/palmpay.svg", "successRate": 97, "latency": 95, "status": "operational" },
+  { "id": "kuda", "name": "Kuda", "category": "banks", "logo": "/logos/kuda.svg", "successRate": 95, "latency": 110, "status": "operational" },
+  { "id": "moniepoint", "name": "Moniepoint", "category": "banks", "logo": "/logos/moniepoint.svg", "successRate": 98, "latency": 90, "status": "operational" },
+  { "id": "carbon", "name": "Carbon", "category": "banks", "logo": "/logos/carbon.svg", "successRate": 94, "latency": 130, "status": "operational" },
+  { "id": "fairmoney", "name": "FairMoney", "category": "banks", "logo": "/logos/fairmoney.svg", "successRate": 96, "latency": 125, "status": "operational" },
+  { "id": "providus", "name": "Providus Bank", "category": "banks", "logo": "/logos/providus.svg", "successRate": 93, "latency": 160, "status": "operational" }
+]

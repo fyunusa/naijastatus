@@ -1,0 +1,12 @@
+[
+  { "id": "mtn", "name": "MTN", "category": "isps", "logo": "/logos/mtn.svg", "successRate": 92, "latency": 45, "status": "operational" },
+  { "id": "airtel", "name": "Airtel", "category": "isps", "logo": "/logos/airtel.svg", "successRate": 88, "latency": 62, "status": "degraded" },
+  { "id": "glo", "name": "Glo", "category": "isps", "logo": "/logos/glo.svg", "successRate": 75, "latency": 110, "status": "degraded" },
+  { "id": "9mobile", "name": "9mobile", "category": "isps", "logo": "/logos/9mobile.svg", "successRate": 82, "latency": 85, "status": "degraded" },
+  { "id": "starlink", "name": "Starlink", "category": "isps", "logo": "/logos/starlink.svg", "successRate": 99, "latency": 25, "status": "operational" },
+  { "id": "spectranet", "name": "Spectranet", "category": "isps", "logo": "/logos/spectranet.svg", "successRate": 90, "latency": 55, "status": "operational" },
+  { "id": "ipnx", "name": "ipNX Fiber", "category": "isps", "logo": "/logos/ipnx.svg", "successRate": 94, "latency": 35, "status": "operational" },
+  { "id": "smile", "name": "Smile LTE", "category": "isps", "logo": "/logos/smile.svg", "successRate": 85, "latency": 70, "status": "degraded" },
+  { "id": "fiberone", "name": "FiberOne", "category": "isps", "logo": "/logos/fiberone.svg", "successRate": 91, "latency": 40, "status": "operational" },
+  { "id": "tizeti", "name": "Tizeti", "category": "isps", "logo": "/logos/tizeti.svg", "successRate": 80, "latency": 95, "status": "degraded" }
+]
