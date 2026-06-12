@@ -3,6 +3,8 @@
  * Interactive Three.js globe via Globe.gl focused on Nigeria
  */
 
+import * as THREE from 'three';
+
 export function initGlobe() {
   const container = document.getElementById('globe-container');
   if (!container) return;
@@ -34,15 +36,38 @@ export function initGlobe() {
       { startLat: 12.0022, startLng: 8.5920, endLat: 10.5105, endLng: 7.4165, color: ['#58CC02', '#1CB0F6'] },
     ];
 
+    // Create glassy transparent globe material
+    const globeMaterial = new THREE.MeshPhongMaterial({
+      color: isDark ? '#152b3c' : '#e0e4e8',
+      transparent: true,
+      opacity: 0.35,
+      depthWrite: false
+    });
+
+    let hoverD = null;
+
     const globe = Globe()
-      .showGlobe(false) // Hide default earth sphere
-      .showAtmosphere(false) // Hide atmosphere
+      .showGlobe(true) // Show the sphere (circle)
+      .showAtmosphere(true) // Atmosphere glow
+      .atmosphereColor(isDark ? '#1CB0F6' : '#58CC02')
+      .atmosphereAltitude(0.12)
       .backgroundColor(isDark ? '#0D1B2A' : '#F7F7F7')
-      // Nigeria 3D Polygon Cap
-      .polygonCapColor(() => '#58CC02')
+      .globeMaterial(globeMaterial) // Apply glass material
+      
+      // Nigeria 3D Polygons (States)
+      .polygonCapColor(d => d === hoverD 
+        ? 'rgba(28, 176, 246, 0.75)' // Neon blue on hover
+        : 'rgba(88, 204, 2, 0.35)'   // Branded semi-transparent green normally
+      )
       .polygonSideColor(() => 'rgba(70, 163, 2, 0.25)')
       .polygonStrokeColor(() => '#46A302')
       .polygonAltitude(0.015)
+      .polygonLabel(d => `
+        <div style="background: var(--bg-secondary, #1B2D36); border: 2px solid var(--border, #2A3F4D); padding: 8px 12px; border-radius: 12px; color: var(--text-primary, #ECEFF1); font-family: var(--font-family); font-weight: 700; box-shadow: 0 4px 0 var(--border, #2A3F4D); pointer-events: none;">
+          🇳🇬 ${d.properties.admin1Name} State
+        </div>
+      `)
+      
       // Points (cities)
       .pointsData(cities)
       .pointLat('lat')
@@ -51,6 +76,7 @@ export function initGlobe() {
       .pointRadius((d) => d.size * 0.3)
       .pointColor(() => '#1CB0F6') // Neon blue for contrast
       .pointResolution(12)
+      
       // Arcs (network connections)
       .arcsData(arcs)
       .arcStartLat('startLat')
@@ -62,7 +88,8 @@ export function initGlobe() {
       .arcDashGap(0.2)
       .arcDashAnimateTime(1500)
       .arcStroke(0.6)
-      // Labels
+      
+      // Labels (city names)
       .labelsData(cities)
       .labelLat('lat')
       .labelLng('lng')
@@ -74,13 +101,13 @@ export function initGlobe() {
       .labelDotRadius(0.3)
       (container);
 
-    // Fetch and apply Nigeria GeoJSON
-    fetch('/nigeria.geojson')
+    // Fetch and apply Nigeria States GeoJSON
+    fetch('/nigeria-states.geojson')
       .then((res) => res.json())
       .then((geojson) => {
         globe.polygonsData(geojson.features);
       })
-      .catch((err) => console.warn('Failed to load nigeria.geojson:', err));
+      .catch((err) => console.warn('Failed to load nigeria-states.geojson:', err));
 
     // Focus on Nigeria (zoomed in closer from 2.5 to 1.45)
     globe.pointOfView({ lat: 9.08, lng: 8.68, altitude: 1.45 }, 2000);
@@ -90,7 +117,48 @@ export function initGlobe() {
     controls.autoRotate = false;
     controls.enableZoom = true;
 
-    // Handle user interaction to pause/resume swaying
+    // Hover effect trigger
+    globe.onPolygonHover(hoverObj => {
+      hoverD = hoverObj;
+      globe.polygonCapColor(globe.polygonCapColor()); // Force cap color recalculation
+    });
+
+    // Zoom into clicked state
+    globe.onPolygonClick((polygon) => {
+      let coords = [];
+      if (polygon.geometry.type === 'Polygon') {
+        coords = polygon.geometry.coordinates[0];
+      } else if (polygon.geometry.type === 'MultiPolygon') {
+        coords = polygon.geometry.coordinates[0][0];
+      }
+
+      if (coords.length > 0) {
+        let sumLat = 0, sumLng = 0;
+        coords.forEach(c => {
+          sumLng += c[0];
+          sumLat += c[1];
+        });
+        const lat = sumLat / coords.length;
+        const lng = sumLng / coords.length;
+
+        // Fly camera to the clicked state (altitude: 0.5 for close detail)
+        globe.pointOfView({ lat, lng, altitude: 0.5 }, 1500);
+
+        // Pause sway while user is inspecting
+        cancelAnimationFrame(swayInterval);
+        clearTimeout(swayTimeout);
+        isDragging = true;
+
+        // Reset view and resume sway after 6 seconds of inactivity
+        swayTimeout = setTimeout(() => {
+          isDragging = false;
+          globe.pointOfView({ lat: 9.08, lng: 8.68, altitude: 1.45 }, 1500);
+          swayTimeout = setTimeout(startSway, 1600);
+        }, 6000);
+      }
+    });
+
+    // Handle user drag pointer interaction
     let isDragging = false;
     let swayTimeout = null;
     let swayInterval = null;
@@ -138,10 +206,14 @@ export function initGlobe() {
     window.addEventListener('resize', handleResize);
     handleResize();
 
-    // Listen for theme changes and update background
+    // Listen for theme changes and update background and material color
     const observer = new MutationObserver(() => {
       const dark = document.documentElement.getAttribute('data-theme') === 'dark';
       globe.backgroundColor(dark ? '#0D1B2A' : '#F7F7F7');
+      globe.atmosphereColor(dark ? '#1CB0F6' : '#58CC02');
+      if (globeMaterial) {
+        globeMaterial.color.set(dark ? '#152b3c' : '#e0e4e8');
+      }
     });
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
