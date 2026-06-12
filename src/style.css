@@ -918,3 +918,32 @@ img {
     display: none;
   }
 }
+
+/* ---- Offline Banner ---- */
+.offline-banner {
+  position: fixed;
+  top: 88px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--status-red);
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--radius-lg);
+  font-weight: 700;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 0 var(--status-red-shadow);
+  z-index: 101; /* Above navbar */
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.offline-banner.active {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+

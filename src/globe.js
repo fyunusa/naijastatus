@@ -76,12 +76,13 @@ export function initGlobe() {
       .labelDotRadius(0.15)
       (container);
 
-    // Fetch and apply Nigeria States GeoJSON & states coordinates list
+    // Fetch and apply Nigeria States GeoJSON, states list & network connections
     Promise.all([
       fetch('/nigeria-states.geojson').then((res) => res.json()),
-      fetch('/data/states.json').then((res) => res.json())
+      fetch('/data/states.json').then((res) => res.json()),
+      fetch('/data/connections.json').then((res) => res.json())
     ])
-    .then(([geojson, states]) => {
+    .then(([geojson, states, arcConnections]) => {
       // Set Polygons
       globe.polygonsData(geojson.features);
 
@@ -91,20 +92,7 @@ export function initGlobe() {
       // Set Labels (state names)
       globe.labelsData(states);
 
-      // Create simulated connections between states dynamically
-      const arcConnections = [
-        { from: 'Lagos', to: 'Federal Capital Territory', color: ['#58CC02', '#1CB0F6'] },
-        { from: 'Lagos', to: 'Rivers', color: ['#58CC02', '#FFC800'] },
-        { from: 'Federal Capital Territory', to: 'Kano', color: ['#1CB0F6', '#58CC02'] },
-        { from: 'Lagos', to: 'Oyo', color: ['#58CC02', '#58CC02'] },
-        { from: 'Federal Capital Territory', to: 'Enugu', color: ['#1CB0F6', '#FFC800'] },
-        { from: 'Rivers', to: 'Edo', color: ['#FFC800', '#58CC02'] },
-        { from: 'Kano', to: 'Kaduna', color: ['#58CC02', '#1CB0F6'] },
-        { from: 'Oyo', to: 'Kaduna', color: ['#58CC02', '#1CB0F6'] },
-        { from: 'Delta', to: 'Lagos', color: ['#FFC800', '#58CC02'] },
-        { from: 'Borno', to: 'Federal Capital Territory', color: ['#FFC800', '#1CB0F6'] }
-      ];
-
+      // Map connection list to coordinates dynamically
       const arcs = [];
       arcConnections.forEach(conn => {
         const fromState = states.find(s => s.name === conn.from);

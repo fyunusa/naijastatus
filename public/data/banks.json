@@ -3,6 +3,7 @@
     "id": "gtbank",
     "name": "GTBank",
     "category": "banks",
+    "url": "https://www.gtbank.com",
     "logo": "/logos/gtbank.svg",
     "successRate": 94,
     "latency": 180,
@@ -11,13 +12,14 @@
       { "name": "Inflow (Receiving)", "status": "operational", "detail": "Instant settlement active" },
       { "name": "Outflow (Sending)", "status": "operational", "detail": "NIP channels operational" },
       { "name": "Mobile App", "status": "operational", "detail": "Normal login times" },
-      { "name": "USSD (*737#)", "status": "degraded", "detail": "Telco gateway delays" }
+      { "name": "USSD (*737#)", "status": "operational", "detail": "Stable connection" }
     ]
   },
   {
     "id": "zenith",
     "name": "Zenith Bank",
     "category": "banks",
+    "url": "https://www.zenithbank.com",
     "logo": "/logos/zenith.svg",
     "successRate": 98,
     "latency": 120,
@@ -33,13 +35,14 @@
     "id": "access",
     "name": "Access Bank",
     "category": "banks",
+    "url": "https://www.accessbankplc.com",
     "logo": "/logos/access.svg",
     "successRate": 91,
     "latency": 210,
     "status": "operational",
     "sectors": [
       { "name": "Inflow (Receiving)", "status": "operational", "detail": "Operational" },
-      { "name": "Outflow (Sending)", "status": "degraded", "detail": "Minor delay on corporate transfers" },
+      { "name": "Outflow (Sending)", "status": "operational", "detail": "Stable transfers" },
       { "name": "Mobile App", "status": "operational", "detail": "Normal" }
     ]
   },
@@ -47,13 +50,14 @@
     "id": "firstbank",
     "name": "FirstBank",
     "category": "banks",
+    "url": "https://www.firstbanknigeria.com",
     "logo": "/logos/firstbank.svg",
     "successRate": 87,
     "latency": 320,
     "status": "degraded",
     "sectors": [
       { "name": "Inflow (Receiving)", "status": "operational", "detail": "Settlement active" },
-      { "name": "Outflow (Sending)", "status": "degraded", "detail": "Inter-bank network delay" },
+      { "name": "Outflow (Sending)", "status": "operational", "detail": "Operational" },
       { "name": "Mobile App", "status": "degraded", "detail": "Frequent timeouts on login" }
     ]
   },
@@ -61,6 +65,7 @@
     "id": "uba",
     "name": "UBA",
     "category": "banks",
+    "url": "https://www.ubagroup.com",
     "logo": "/logos/uba.svg",
     "successRate": 96,
     "latency": 140,
@@ -74,6 +79,7 @@
     "id": "union",
     "name": "Union Bank",
     "category": "banks",
+    "url": "https://www.unionbankng.com",
     "logo": "/logos/union.svg",
     "successRate": 92,
     "latency": 190,
@@ -87,19 +93,21 @@
     "id": "sterling",
     "name": "Sterling Bank",
     "category": "banks",
+    "url": "https://www.sterling.ng",
     "logo": "/logos/sterling.svg",
     "successRate": 90,
     "latency": 220,
     "status": "operational",
     "sectors": [
       { "name": "Inflow (Receiving)", "status": "operational", "detail": "Normal" },
-      { "name": "Outflow (Sending)", "status": "degraded", "detail": "Minor NIBSS handshake latency" }
+      { "name": "Outflow (Sending)", "status": "operational", "detail": "Operational" }
     ]
   },
   {
     "id": "wema",
     "name": "Wema Bank",
     "category": "banks",
+    "url": "https://www.wemabank.com",
     "logo": "/logos/wema.svg",
     "successRate": 89,
     "latency": 240,
@@ -107,13 +115,14 @@
     "sectors": [
       { "name": "Inflow (Receiving)", "status": "operational", "detail": "Normal" },
       { "name": "Outflow (Sending)", "status": "operational", "detail": "Normal" },
-      { "name": "ALAT App", "status": "degraded", "detail": "Server overhead delay" }
+      { "name": "ALAT App", "status": "operational", "detail": "Normal" }
     ]
   },
   {
     "id": "fidelity",
     "name": "Fidelity Bank",
     "category": "banks",
+    "url": "https://www.fidelitybank.ng",
     "logo": "/logos/fidelity.svg",
     "successRate": 93,
     "latency": 170,
@@ -127,6 +136,7 @@
     "id": "fcmb",
     "name": "FCMB",
     "category": "banks",
+    "url": "https://www.fcmb.com",
     "logo": "/logos/fcmb.svg",
     "successRate": 91,
     "latency": 200,
@@ -140,6 +150,7 @@
     "id": "stanbic",
     "name": "Stanbic IBTC",
     "category": "banks",
+    "url": "https://www.stanbicibtcbank.com",
     "logo": "/logos/stanbic.svg",
     "successRate": 95,
     "latency": 150,
@@ -153,6 +164,7 @@
     "id": "opay",
     "name": "OPay",
     "category": "banks",
+    "url": "https://www.opayweb.com",
     "logo": "/logos/opay.svg",
     "successRate": 99,
     "latency": 80,
@@ -167,6 +179,7 @@
     "id": "palmpay",
     "name": "PalmPay",
     "category": "banks",
+    "url": "https://www.palmpay.com",
     "logo": "/logos/palmpay.svg",
     "successRate": 97,
     "latency": 95,
@@ -180,6 +193,7 @@
     "id": "kuda",
     "name": "Kuda",
     "category": "banks",
+    "url": "https://www.kudabank.com",
     "logo": "/logos/kuda.svg",
     "successRate": 95,
     "latency": 110,
@@ -193,6 +207,7 @@
     "id": "moniepoint",
     "name": "Moniepoint",
     "category": "banks",
+    "url": "https://moniepoint.com",
     "logo": "/logos/moniepoint.svg",
     "successRate": 98,
     "latency": 90,
@@ -206,6 +221,7 @@
     "id": "carbon",
     "name": "Carbon",
     "category": "banks",
+    "url": "https://www.getcarbon.co",
     "logo": "/logos/carbon.svg",
     "successRate": 94,
     "latency": 130,
@@ -219,6 +235,7 @@
     "id": "fairmoney",
     "name": "FairMoney",
     "category": "banks",
+    "url": "https://www.fairmoney.io",
     "logo": "/logos/fairmoney.svg",
     "successRate": 96,
     "latency": 125,
@@ -232,6 +249,7 @@
     "id": "providus",
     "name": "Providus Bank",
     "category": "banks",
+    "url": "https://www.providusbank.com",
     "logo": "/logos/providus.svg",
     "successRate": 93,
     "latency": 160,

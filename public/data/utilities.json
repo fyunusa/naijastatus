@@ -3,12 +3,13 @@
     "id": "ikedc",
     "name": "IKEDC",
     "category": "utilities",
+    "url": "https://www.ikejaelectric.com",
     "logo": "/logos/ikedc.svg",
     "successRate": 80,
     "latency": 400,
-    "status": "degraded",
+    "status": "operational",
     "sectors": [
-      { "name": "Token Generation", "status": "degraded", "detail": "Delayed vending queues" },
+      { "name": "Token Vending API", "status": "operational", "detail": "Vending queues normal" },
       { "name": "Payment Gateway", "status": "operational", "detail": "Normal" }
     ]
   },
@@ -16,12 +17,13 @@
     "id": "ekedc",
     "name": "EKEDC",
     "category": "utilities",
+    "url": "https://ekedp.com",
     "logo": "/logos/ekedc.svg",
     "successRate": 78,
     "latency": 450,
-    "status": "degraded",
+    "status": "operational",
     "sectors": [
-      { "name": "Token Generation", "status": "degraded", "detail": "Delays on API hook" },
+      { "name": "Token Vending API", "status": "operational", "detail": "API response normal" },
       { "name": "Payment Gateway", "status": "operational", "detail": "Normal" }
     ]
   },
@@ -29,37 +31,40 @@
     "id": "aedc",
     "name": "AEDC",
     "category": "utilities",
+    "url": "https://www.abujaelectricity.com",
     "logo": "/logos/aedc.svg",
     "successRate": 82,
     "latency": 380,
-    "status": "degraded",
+    "status": "operational",
     "sectors": [
-      { "name": "Token Generation", "status": "degraded", "detail": "Vending server overhead" }
+      { "name": "Token Vending API", "status": "operational", "detail": "Vending normal" }
     ]
   },
   {
     "id": "jamb",
     "name": "JAMB Portal",
     "category": "government",
+    "url": "https://www.jamb.gov.ng",
     "logo": "/logos/jamb.svg",
     "successRate": 70,
     "latency": 600,
-    "status": "outage",
+    "status": "operational",
     "sectors": [
-      { "name": "Portal Login", "status": "outage", "detail": "Gateway connection timeout (504)" },
-      { "name": "Registration Submission", "status": "outage", "detail": "Database lock latency" }
+      { "name": "Portal Login", "status": "operational", "detail": "Normal" },
+      { "name": "Registration Submission", "status": "operational", "detail": "Normal" }
     ]
   },
   {
     "id": "nysc",
     "name": "NYSC Portal",
     "category": "government",
+    "url": "https://www.nysc.gov.ng",
     "logo": "/logos/nysc.svg",
     "successRate": 85,
     "latency": 350,
-    "status": "degraded",
+    "status": "operational",
     "sectors": [
-      { "name": "Call-up Letter Printing", "status": "degraded", "detail": "High server load pings" },
+      { "name": "Call-up Letter Printing", "status": "operational", "detail": "Dashboard login online" },
       { "name": "Dashboard Login", "status": "operational", "detail": "Normal" }
     ]
   },
@@ -67,6 +72,7 @@
     "id": "waec",
     "name": "WAEC Portal",
     "category": "government",
+    "url": "https://www.waecnigeria.org",
     "logo": "/logos/waec.svg",
     "successRate": 88,
     "latency": 290,
@@ -80,6 +86,7 @@
     "id": "remita",
     "name": "Remita",
     "category": "utilities",
+    "url": "https://www.remita.net",
     "logo": "/logos/remita.svg",
     "successRate": 94,
     "latency": 180,
@@ -93,6 +100,7 @@
     "id": "nibss",
     "name": "NIBSS",
     "category": "utilities",
+    "url": "https://nibss-plc.com.ng",
     "logo": "/logos/nibss.svg",
     "successRate": 96,
     "latency": 120,
@@ -100,6 +108,34 @@
     "sectors": [
       { "name": "Instant Payment (NIP)", "status": "operational", "detail": "Active" },
       { "name": "Direct Debit", "status": "operational", "detail": "Active" }
+    ]
+  },
+  {
+    "id": "paystack",
+    "name": "Paystack Gateway",
+    "category": "utilities",
+    "url": "https://api.paystack.co",
+    "logo": "/logos/paystack.svg",
+    "successRate": 98,
+    "latency": 100,
+    "status": "operational",
+    "sectors": [
+      { "name": "API Gateway", "status": "operational", "detail": "Operational" },
+      { "name": "Transactions", "status": "operational", "detail": "Operational" }
+    ]
+  },
+  {
+    "id": "monnify",
+    "name": "Monnify (Moniepoint)",
+    "category": "utilities",
+    "url": "https://api.monnify.com",
+    "logo": "/logos/monnify.svg",
+    "successRate": 98,
+    "latency": 100,
+    "status": "operational",
+    "sectors": [
+      { "name": "API Gateway", "status": "operational", "detail": "Operational" },
+      { "name": "Webhooks Gateway", "status": "operational", "detail": "Operational" }
     ]
   }
 ]

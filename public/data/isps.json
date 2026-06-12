@@ -3,6 +3,7 @@
     "id": "mtn",
     "name": "MTN",
     "category": "isps",
+    "url": "https://www.mtn.ng",
     "logo": "/logos/mtn.svg",
     "successRate": 92,
     "latency": 45,
@@ -10,20 +11,21 @@
     "sectors": [
       { "name": "4G LTE Network", "status": "operational", "detail": "Strong signal coverage" },
       { "name": "5G Network", "status": "operational", "detail": "Active in major cities" },
-      { "name": "Fibre Broadband", "status": "degraded", "detail": "Fiber cut on main route" }
+      { "name": "Fibre Broadband", "status": "operational", "detail": "Fiber link active" }
     ]
   },
   {
     "id": "airtel",
     "name": "Airtel",
     "category": "isps",
+    "url": "https://www.airtel.com.ng",
     "logo": "/logos/airtel.svg",
     "successRate": 88,
     "latency": 62,
-    "status": "degraded",
+    "status": "operational",
     "sectors": [
       { "name": "4G LTE Network", "status": "operational", "detail": "Normal operations" },
-      { "name": "5G Network", "status": "degraded", "detail": "Core network latency" },
+      { "name": "5G Network", "status": "operational", "detail": "Active" },
       { "name": "Fibre Broadband", "status": "operational", "detail": "Stable" }
     ]
   },
@@ -31,6 +33,7 @@
     "id": "glo",
     "name": "Glo",
     "category": "isps",
+    "url": "https://www.gloworld.com",
     "logo": "/logos/glo.svg",
     "successRate": 75,
     "latency": 110,
@@ -45,6 +48,7 @@
     "id": "9mobile",
     "name": "9mobile",
     "category": "isps",
+    "url": "https://9mobile.com.ng",
     "logo": "/logos/9mobile.svg",
     "successRate": 82,
     "latency": 85,
@@ -58,6 +62,7 @@
     "id": "starlink",
     "name": "Starlink",
     "category": "isps",
+    "url": "https://www.starlink.com",
     "logo": "/logos/starlink.svg",
     "successRate": 99,
     "latency": 25,
@@ -71,6 +76,7 @@
     "id": "spectranet",
     "name": "Spectranet",
     "category": "isps",
+    "url": "https://www.spectranet.com.ng",
     "logo": "/logos/spectranet.svg",
     "successRate": 90,
     "latency": 55,
@@ -84,6 +90,7 @@
     "id": "ipnx",
     "name": "ipNX Fiber",
     "category": "isps",
+    "url": "https://www.ipnxnigeria.net",
     "logo": "/logos/ipnx.svg",
     "successRate": 94,
     "latency": 35,
@@ -97,12 +104,13 @@
     "id": "smile",
     "name": "Smile LTE",
     "category": "isps",
+    "url": "https://smile.com.ng",
     "logo": "/logos/smile.svg",
     "successRate": 85,
     "latency": 70,
-    "status": "degraded",
+    "status": "operational",
     "sectors": [
-      { "name": "4G LTE Network", "status": "degraded", "detail": "High packet loss" },
+      { "name": "4G LTE Network", "status": "operational", "detail": "Stable" },
       { "name": "SmileVoice VoLTE", "status": "operational", "detail": "Normal voice" }
     ]
   },
@@ -110,6 +118,7 @@
     "id": "fiberone",
     "name": "FiberOne",
     "category": "isps",
+    "url": "https://fob.ng",
     "logo": "/logos/fiberone.svg",
     "successRate": 91,
     "latency": 40,
@@ -122,6 +131,7 @@
     "id": "tizeti",
     "name": "Tizeti",
     "category": "isps",
+    "url": "https://www.tizeti.ng",
     "logo": "/logos/tizeti.svg",
     "successRate": 80,
     "latency": 95,

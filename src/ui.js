@@ -49,7 +49,7 @@ export function renderCards() {
           <span class="card-stat-label">Success</span>
         </div>
         <div class="card-stat">
-          <span class="card-stat-value" style="color: var(--text-primary)">${service.latency}ms</span>
+          <span class="card-stat-value" style="color: var(--text-primary)">${service.status === 'outage' ? '—' : `${service.latency}ms`}</span>
           <span class="card-stat-label">Latency</span>
         </div>
       </div>
@@ -80,7 +80,7 @@ export function updateCards(services) {
     successVal.className = `card-stat-value ${service.status}`;
 
     const latencyVal = card.querySelectorAll('.card-stat-value')[1];
-    if (latencyVal) latencyVal.textContent = `${service.latency}ms`;
+    if (latencyVal) latencyVal.textContent = service.status === 'outage' ? '—' : `${service.latency}ms`;
 
     const badge = card.querySelector('.card-status-badge');
     badge.className = `card-status-badge ${service.status}`;
@@ -315,4 +315,21 @@ export function initUI() {
   window.addEventListener('statusUpdate', (e) => {
     updateCards(e.detail.services);
   });
+
+  // Offline warning handler
+  const offlineBanner = document.getElementById('offline-banner');
+  if (offlineBanner) {
+    if (!navigator.onLine) {
+      offlineBanner.classList.add('active');
+    }
+
+    window.addEventListener('connectionStatus', (e) => {
+      if (e.detail.online) {
+        offlineBanner.classList.remove('active');
+      } else {
+        offlineBanner.classList.add('active');
+      }
+    });
+  }
 }
+

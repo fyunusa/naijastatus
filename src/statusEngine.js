@@ -1,31 +1,241 @@
 /**
  * NaijaStatus — Status Engine
- * Loads services dynamically from separate JSON files and simulates real-time success rates & latency
+ * Runs real-time client-side reachability pings, integrates Paystack API health components,
+ * and incorporates crowdsourced issue reporting.
  */
 
 let services = [];
-let reports = 247; // Simulated starting count
-let intervalId = null;
+let baseReportsCount = 247; // Base report count offset
+let isUpdating = false;
+let updateIntervalId = null;
 
-function getStatusFromRate(rate) {
-  if (rate >= 90) return 'operational';
-  if (rate >= 70) return 'degraded';
-  return 'outage';
+// Paystack live country-wide payment rails status state
+const paystackChannels = {
+  bankTransfer: 'operational',
+  cards: 'operational',
+  ussd: 'operational',
+  transfers: 'operational'
+};
+
+/**
+ * Clean up old reports in localStorage and return the count for a service in the last 15 minutes
+ */
+function getRecentReportsCount(serviceId) {
+  const reportsList = JSON.parse(localStorage.getItem('naijastatus-reports') || '[]');
+  const fifteenMinutesAgo = Date.now() - 15 * 60 * 1000;
+  
+  // Clean up expired reports
+  const recent = reportsList.filter(r => r.timestamp > fifteenMinutesAgo);
+  localStorage.setItem('naijastatus-reports', JSON.stringify(recent));
+
+  return recent.filter(r => r.serviceId === serviceId).length;
 }
 
 /**
- * Simulate real-time fluctuations
+ * Fetch Paystack's public Status Page components to see national bank transfer gateway status
  */
-function simulateUpdates() {
-  services.forEach((s) => {
-    const delta = (Math.random() - 0.5) * 4; // ±2%
-    s.successRate = Math.max(0, Math.min(100, Math.round(s.successRate + delta)));
-    s.latency = Math.max(10, Math.round(s.latency + (Math.random() - 0.5) * 30));
-    s.status = getStatusFromRate(s.successRate);
-  });
+async function updatePaystackChannels() {
+  try {
+    const res = await fetch('https://status.paystack.com/v3/components.json');
+    if (!res.ok) return;
+    const components = await res.json();
 
-  // Dispatch custom event
-  window.dispatchEvent(new CustomEvent('statusUpdate', { detail: { services } }));
+    components.forEach(comp => {
+      const name = comp.name ? comp.name.toLowerCase() : '';
+      const group = comp.group && comp.group.name ? comp.group.name.toLowerCase() : '';
+      const status = comp.status ? comp.status.toLowerCase() : 'operational';
+
+      let cleanStatus = 'operational';
+      if (status.includes('degraded') || status.includes('partial')) {
+        cleanStatus = 'degraded';
+      } else if (status.includes('major') || status.includes('outage')) {
+        cleanStatus = 'outage';
+      }
+
+      // Track channels for the Nigeria market specifically
+      if (group.includes('nigeria')) {
+        if (name.includes('bank transfer')) {
+          paystackChannels.bankTransfer = cleanStatus;
+        } else if (name.includes('cards')) {
+          paystackChannels.cards = cleanStatus;
+        } else if (name.includes('ussd')) {
+          paystackChannels.ussd = cleanStatus;
+        } else if (name === 'bank') {
+          paystackChannels.transfers = cleanStatus;
+        }
+      }
+    });
+  } catch (err) {
+    console.warn('Could not load Paystack channels status:', err);
+  }
+}
+
+/**
+ * Perform client-side reachability check for a service using HTTP GET in no-cors mode
+ */
+async function pingService(service) {
+  // If user is completely offline, return standard offline state
+  if (!navigator.onLine) {
+    return {
+      status: 'outage',
+      successRate: 0,
+      latency: 0,
+      sectors: service.sectors.map(sec => ({
+        ...sec,
+        status: 'outage',
+        detail: 'Browser is offline'
+      }))
+    };
+  }
+
+  const start = performance.now();
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
+
+  try {
+    // Perform standard CORS-free reachability ping
+    await fetch(service.url, {
+      method: 'GET',
+      mode: 'no-cors',
+      cache: 'no-store',
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+    const latency = Math.round(performance.now() - start);
+
+    // Compute base success rate based on latency thresholds
+    let baseRate = 100;
+    let status = 'operational';
+
+    if (latency > 2500) {
+      status = 'degraded';
+      baseRate = 70;
+    } else if (latency > 1000) {
+      status = 'degraded';
+      baseRate = 85;
+    } else if (latency > 400) {
+      baseRate = 95;
+    }
+
+    // Degrade success rate dynamically based on recent crowdsourced user reports (DownDetector model)
+    const recentReports = getRecentReportsCount(service.id);
+    const successRate = Math.max(0, baseRate - (recentReports * 15));
+
+    let finalStatus = status;
+    if (successRate < 70) {
+      finalStatus = 'outage';
+    } else if (successRate < 90) {
+      finalStatus = 'degraded';
+    }
+
+    // Map sub-sector details dynamically, factoring in processor alerts for banks
+    const sectors = service.sectors.map(sec => {
+      let secStatus = finalStatus;
+      let secDetail = sec.detail || 'Operational';
+
+      if (finalStatus === 'outage') {
+        secStatus = 'outage';
+        secDetail = 'Connection failed';
+      } else {
+        // Banks utilize Paystack's transaction switches for specific channel status
+        if (service.category === 'banks') {
+          const nameLower = sec.name.toLowerCase();
+          if (nameLower.includes('inflow') || nameLower.includes('receiving')) {
+            secStatus = paystackChannels.bankTransfer;
+            secDetail = paystackChannels.bankTransfer === 'operational' ? 'Instant settlement active' : 'Processor reporting delays';
+          } else if (nameLower.includes('outflow') || nameLower.includes('sending')) {
+            secStatus = paystackChannels.transfers;
+            secDetail = paystackChannels.transfers === 'operational' ? 'NIP channels active' : 'Processor transfers delayed';
+          } else if (nameLower.includes('ussd')) {
+            secStatus = paystackChannels.ussd;
+            secDetail = paystackChannels.ussd === 'operational' ? 'Stable connection' : 'Processor reporting USSD delays';
+          } else if (nameLower.includes('app') || nameLower.includes('wallet')) {
+            secStatus = finalStatus;
+            secDetail = finalStatus === 'operational' ? 'Stable login times' : 'Server overhead latency';
+          }
+        } else {
+          // General services degrade their sectors if the main service is degraded/down
+          if (finalStatus === 'degraded') {
+            secStatus = 'degraded';
+            secDetail = 'Elevated response time';
+          }
+        }
+      }
+
+      return { ...sec, status: secStatus, detail: secDetail };
+    });
+
+    return {
+      status: finalStatus,
+      successRate,
+      latency,
+      sectors
+    };
+  } catch (err) {
+    clearTimeout(timeoutId);
+    // Connection timed out or domain resolution failed (outage)
+    const detail = err.name === 'AbortError' ? 'Connection timed out (6s)' : 'Host unreachable / DNS failure';
+    return {
+      status: 'outage',
+      successRate: 0,
+      latency: 0,
+      sectors: service.sectors.map(sec => ({
+        ...sec,
+        status: 'outage',
+        detail
+      }))
+    };
+  }
+}
+
+/**
+ * Execute client-side status pings in concurrent batches of 8 to avoid blocking browser network pool
+ */
+async function checkAllServices() {
+  if (isUpdating) return;
+  isUpdating = true;
+
+  try {
+    // 1. Check if user is online
+    if (!navigator.onLine) {
+      window.dispatchEvent(new CustomEvent('connectionStatus', { detail: { online: false } }));
+      services.forEach(s => {
+        s.status = 'outage';
+        s.successRate = 0;
+        s.latency = 0;
+        s.sectors.forEach(sec => {
+          sec.status = 'outage';
+          sec.detail = 'You are offline';
+        });
+      });
+      window.dispatchEvent(new CustomEvent('statusUpdate', { detail: { services } }));
+      isUpdating = false;
+      return;
+    }
+
+    window.dispatchEvent(new CustomEvent('connectionStatus', { detail: { online: true } }));
+
+    // 2. Fetch Paystack status channels
+    await updatePaystackChannels();
+
+    // 3. Batch ping checks
+    const batchSize = 8;
+    for (let i = 0; i < services.length; i += batchSize) {
+      const batch = services.slice(i, i + batchSize);
+      await Promise.all(batch.map(async (s) => {
+        const result = await pingService(s);
+        Object.assign(s, result);
+      }));
+    }
+
+    // 4. Dispatch the unified update event
+    window.dispatchEvent(new CustomEvent('statusUpdate', { detail: { services } }));
+  } catch (err) {
+    console.error('Error in status check loop:', err);
+  } finally {
+    isUpdating = false;
+  }
 }
 
 /**
@@ -42,10 +252,34 @@ export async function initServices() {
 
     services = [...banks, ...isps, ...rides, ...utilities];
 
-    // Start simulation after successfully loading
-    if (!intervalId) {
-      intervalId = setInterval(simulateUpdates, 5000);
+    // Perform initial pings immediately
+    await checkAllServices();
+
+    // Set up recurring update check every 30 seconds
+    if (!updateIntervalId) {
+      updateIntervalId = setInterval(checkAllServices, 30000);
     }
+
+    // Wire global network connection listeners
+    window.addEventListener('online', () => {
+      window.dispatchEvent(new CustomEvent('connectionStatus', { detail: { online: true } }));
+      checkAllServices();
+    });
+    window.addEventListener('offline', () => {
+      window.dispatchEvent(new CustomEvent('connectionStatus', { detail: { online: false } }));
+      // Set all to offline
+      services.forEach(s => {
+        s.status = 'outage';
+        s.successRate = 0;
+        s.latency = 0;
+        s.sectors.forEach(sec => {
+          sec.status = 'outage';
+          sec.detail = 'You are offline';
+        });
+      });
+      window.dispatchEvent(new CustomEvent('statusUpdate', { detail: { services } }));
+    });
+
   } catch (err) {
     console.error('Failed to load services data:', err);
   }
@@ -53,7 +287,6 @@ export async function initServices() {
 
 export function getServices(category) {
   if (!category || category === 'all') return services;
-  // Government is also in the utilities grid section
   if (category === 'utilities') {
     return services.filter((s) => s.category === 'utilities' || s.category === 'government');
   }
@@ -66,8 +299,8 @@ export function getAllServices() {
 
 export function getOverallHealth() {
   if (services.length === 0) return 0;
-  const avg = services.reduce((sum, s) => sum + s.successRate, 0) / services.length;
-  return Math.round(avg);
+  const onlineServices = services.filter(s => s.status === 'operational');
+  return Math.round((onlineServices.length / services.length) * 100);
 }
 
 export function getServiceCount() {
@@ -75,13 +308,31 @@ export function getServiceCount() {
 }
 
 export function getReportsCount() {
-  return reports;
+  const reportsList = JSON.parse(localStorage.getItem('naijastatus-reports') || '[]');
+  return baseReportsCount + reportsList.length;
 }
 
 export function reportIssue(serviceId, vote, details) {
-  reports++;
-  console.log(`Report: ${serviceId} — ${vote} — ${details}`);
-  return reports;
+  // Push report to localStorage
+  const reportsList = JSON.parse(localStorage.getItem('naijastatus-reports') || '[]');
+  reportsList.push({
+    serviceId,
+    vote,
+    details,
+    timestamp: Date.now()
+  });
+  localStorage.setItem('naijastatus-reports', JSON.stringify(reportsList));
+
+  // Trigger an immediate reachability re-check on this service to incorporate report impact
+  const service = services.find(s => s.id === serviceId);
+  if (service) {
+    pingService(service).then((result) => {
+      Object.assign(service, result);
+      window.dispatchEvent(new CustomEvent('statusUpdate', { detail: { services } }));
+    });
+  }
+
+  return baseReportsCount + reportsList.length;
 }
 
 export function searchServices(query) {
