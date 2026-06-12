@@ -71,7 +71,19 @@ async function updatePaystackChannels() {
 }
 
 /**
- * Perform client-side reachability check for a service using HTTP GET in no-cors mode
+ * Extract root domain from URL for DNS checks
+ */
+function extractDomain(url) {
+  try {
+    const parsed = new URL(url);
+    return parsed.hostname.replace('www.', '');
+  } catch (e) {
+    return '';
+  }
+}
+
+/**
+ * Perform client-side reachability checks using both HTTP GET (no-cors) and Google DoH
  */
 async function pingService(service) {
   // If user is completely offline, return standard offline state
@@ -92,37 +104,68 @@ async function pingService(service) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
 
+  const domain = extractDomain(service.url);
+  const dohUrl = `https://dns.google/resolve?name=${domain}&type=A`;
+
   try {
-    // Perform standard CORS-free reachability ping
-    await fetch(service.url, {
+    // 1. Perform standard CORS-free HTTP reachability check
+    const httpPromise = fetch(service.url, {
       method: 'GET',
       mode: 'no-cors',
       cache: 'no-store',
       signal: controller.signal
-    });
+    }).then(() => true).catch(() => false);
 
+    // 2. Perform DNS-over-HTTPS resolution check via Google DNS (CORS-enabled)
+    const dnsPromise = fetch(dohUrl, {
+      method: 'GET',
+      cache: 'no-store',
+      signal: controller.signal
+    }).then(async (res) => {
+      if (!res.ok) return false;
+      const data = await res.json();
+      return data.Status === 0; // 0 = NOERROR
+    }).catch(() => false);
+
+    // Resolve both concurrently
+    const [httpSuccess, dnsSuccess] = await Promise.all([httpPromise, dnsPromise]);
     clearTimeout(timeoutId);
+    
     const latency = Math.round(performance.now() - start);
 
-    // Compute base success rate based on latency thresholds
-    let baseRate = 100;
-    let status = 'operational';
-
-    if (latency > 2500) {
-      status = 'degraded';
-      baseRate = 70;
-    } else if (latency > 1000) {
-      status = 'degraded';
-      baseRate = 85;
-    } else if (latency > 400) {
-      baseRate = 95;
+    // If both failed, it is an outage
+    if (!httpSuccess && !dnsSuccess) {
+      return {
+        status: 'outage',
+        successRate: 0,
+        latency,
+        sectors: service.sectors.map(sec => ({
+          ...sec,
+          status: 'outage',
+          detail: 'DNS and HTTP checks failed'
+        }))
+      };
     }
 
-    // Degrade success rate dynamically based on recent crowdsourced user reports (DownDetector model)
+    // Weighted Confidence Scorer: DNS resolution (60%), HTTP Reachability (40%)
+    let score = 0;
+    if (httpSuccess) score += 0.40;
+    if (dnsSuccess) score += 0.60;
+
+    let baseRate = Math.round(score * 100);
+
+    // Degrade success rate slightly if latency is extremely high (network congestion)
+    if (latency > 2500) {
+      baseRate = Math.max(0, baseRate - 25);
+    } else if (latency > 1200) {
+      baseRate = Math.max(0, baseRate - 10);
+    }
+
+    // Dynamic reports influence (DownDetector model)
     const recentReports = getRecentReportsCount(service.id);
     const successRate = Math.max(0, baseRate - (recentReports * 15));
 
-    let finalStatus = status;
+    let finalStatus = 'operational';
     if (successRate < 70) {
       finalStatus = 'outage';
     } else if (successRate < 90) {
@@ -174,8 +217,6 @@ async function pingService(service) {
     };
   } catch (err) {
     clearTimeout(timeoutId);
-    // Connection timed out or domain resolution failed (outage)
-    const detail = err.name === 'AbortError' ? 'Connection timed out (6s)' : 'Host unreachable / DNS failure';
     return {
       status: 'outage',
       successRate: 0,
@@ -183,11 +224,12 @@ async function pingService(service) {
       sectors: service.sectors.map(sec => ({
         ...sec,
         status: 'outage',
-        detail
+        detail: 'System check failed'
       }))
     };
   }
 }
+
 
 /**
  * Execute client-side status pings in concurrent batches of 8 to avoid blocking browser network pool
