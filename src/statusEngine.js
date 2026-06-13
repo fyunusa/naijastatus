@@ -38,7 +38,8 @@ async function updatePaystackChannels() {
   try {
     const res = await fetch('https://status.paystack.com/v3/components.json');
     if (!res.ok) return;
-    const components = await res.json();
+    const data = await res.json();
+    const components = data.components || [];
 
     components.forEach(comp => {
       const name = comp.name ? comp.name.toLowerCase() : '';
@@ -345,8 +346,8 @@ export async function initServices() {
 
     services = [...banks, ...isps, ...rides, ...utilities];
 
-    // Perform initial pings immediately
-    await checkAllServices();
+    // Perform initial pings immediately in the background (non-blocking)
+    checkAllServices();
 
     // Set up recurring update check every 30 seconds
     if (!updateIntervalId) {
