@@ -11,6 +11,7 @@ import { initServices } from './statusEngine.js';
 import { initGlobe } from './globe.js';
 import { initUI } from './ui.js';
 import { initAnimations } from './animations.js';
+import { initISPMonitor } from './isp-monitor.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -37,6 +38,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 2. UI (render cards, wire events, dark mode)
   initUI();
+
+  // 2.5. Initialize High-Fidelity ISP Status Monitoring
+  initISPMonitor();
 
   // 3. Globe (3D visualization)
   initGlobe();

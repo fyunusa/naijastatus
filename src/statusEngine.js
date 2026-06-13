@@ -302,6 +302,7 @@ async function checkAllServices() {
     for (let i = 0; i < services.length; i += batchSize) {
       const batch = services.slice(i, i + batchSize);
       await Promise.all(batch.map(async (s) => {
+        if (s.category === 'isps') return; // Skip ISPs, monitored by adaptive scheduler
         const result = await pingService(s);
         Object.assign(s, result);
       }));
@@ -418,10 +419,16 @@ export function reportIssue(serviceId, vote, details) {
   // Trigger an immediate reachability re-check on this service to incorporate report impact
   const service = services.find(s => s.id === serviceId);
   if (service) {
-    pingService(service).then((result) => {
-      Object.assign(service, result);
-      window.dispatchEvent(new CustomEvent('statusUpdate', { detail: { services } }));
-    });
+    if (service.category === 'isps') {
+      import('./isp-monitor.js').then(({ forceRecheck }) => {
+        forceRecheck(service.id.toUpperCase());
+      });
+    } else {
+      pingService(service).then((result) => {
+        Object.assign(service, result);
+        window.dispatchEvent(new CustomEvent('statusUpdate', { detail: { services } }));
+      });
+    }
   }
 
   return baseReportsCount + reportsList.length;

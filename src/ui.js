@@ -38,6 +38,12 @@ export function renderCards() {
     card.className = 'status-card reveal';
     card.setAttribute('data-service-id', service.id);
     card.setAttribute('data-category', service.category);
+    
+    // Add data-isp attribute for ISP cards to integrate with high-fidelity checker
+    if (service.category === 'isps') {
+      card.setAttribute('data-isp', service.id.toUpperCase());
+    }
+
     card.innerHTML = `
       <div class="status-ring ${service.status}">
         <img class="logo-img" src="${service.logo}" alt="${service.name}" onerror="this.style.display='none'" />
@@ -57,6 +63,10 @@ export function renderCards() {
         <span class="badge-dot"></span>
         ${service.status === 'operational' ? 'Operational' : service.status === 'degraded' ? 'Degraded' : 'Outage'}
       </div>
+      ${service.category === 'isps' ? `
+        <div class="card-trend-info" style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); margin-top: -4px;">➡️ Stable</div>
+        <div class="card-last-checked" style="font-size: 0.65rem; font-weight: 600; color: var(--text-tertiary); margin-top: -6px; text-transform: uppercase; letter-spacing: 0.5px;">Last checked: --</div>
+      ` : ''}
     `;
 
     card.addEventListener('click', () => openBottomSheet(service));
