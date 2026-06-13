@@ -303,7 +303,7 @@ async function checkAllServices() {
     for (let i = 0; i < services.length; i += batchSize) {
       const batch = services.slice(i, i + batchSize);
       await Promise.all(batch.map(async (s) => {
-        if (s.category === 'isps') return; // Skip ISPs, monitored by adaptive scheduler
+        if (s.category === 'isps' || s.category === 'banks') return; // Skip ISPs and Banks, monitored by their respective schedulers
         const result = await pingService(s);
         Object.assign(s, result);
       }));
@@ -423,6 +423,10 @@ export function reportIssue(serviceId, vote, details) {
     if (service.category === 'isps') {
       import('./isp-monitor.js').then(({ forceRecheck }) => {
         forceRecheck(service.id.toUpperCase());
+      });
+    } else if (service.category === 'banks') {
+      import('./bank-monitor.js').then(({ forceBankRecheck }) => {
+        forceBankRecheck(service.id.toUpperCase());
       });
     } else {
       pingService(service).then((result) => {

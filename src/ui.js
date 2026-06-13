@@ -44,6 +44,11 @@ export function renderCards() {
       card.setAttribute('data-isp', service.id.toUpperCase());
     }
 
+    // Add data-bank attribute for Bank cards to integrate with high-fidelity checker
+    if (service.category === 'banks') {
+      card.setAttribute('data-bank', service.id.toUpperCase());
+    }
+
     card.innerHTML = `
       <div class="status-ring ${service.status}">
         <img class="logo-img" src="${service.logo}" alt="${service.name}" onerror="this.style.display='none'" />
@@ -66,6 +71,10 @@ export function renderCards() {
       ${service.category === 'isps' ? `
         <div class="card-trend-info" style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); margin-top: -4px;">➡️ Stable</div>
         <div class="card-last-checked" style="font-size: 0.65rem; font-weight: 600; color: var(--text-tertiary); margin-top: -6px; text-transform: uppercase; letter-spacing: 0.5px;">Last checked: --</div>
+      ` : ''}
+      ${service.category === 'banks' ? `
+        <div class="card-last-checked" style="font-size: 0.65rem; font-weight: 600; color: var(--text-tertiary); margin-top: -4px; text-transform: uppercase; letter-spacing: 0.5px;">Last checked: --</div>
+        <div class="nibss-warning" style="display: none; font-size: 0.65rem; font-weight: 700; color: var(--status-red); background: rgba(255, 75, 75, 0.10); padding: 6px 10px; border-radius: var(--radius-md); border: 2px solid rgba(255, 75, 75, 0.25); margin-top: 4px; box-shadow: 0 3px 0 rgba(255, 75, 75, 0.20); width: 100%; text-align: center; text-transform: uppercase; letter-spacing: 0.5px;">⚠️ Interbank transfers affected</div>
       ` : ''}
     `;
 

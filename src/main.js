@@ -12,6 +12,7 @@ import { initGlobe } from './globe.js';
 import { initUI } from './ui.js';
 import { initAnimations } from './animations.js';
 import { initISPMonitor } from './isp-monitor.js';
+import { initBankMonitor } from './bank-monitor.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -41,6 +42,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 2.5. Initialize High-Fidelity ISP Status Monitoring
   initISPMonitor();
+
+  // 2.6. Initialize High-Fidelity Bank Status Monitoring
+  initBankMonitor();
 
   // 3. Globe (3D visualization)
   initGlobe();
