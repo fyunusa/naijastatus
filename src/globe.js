@@ -33,11 +33,11 @@ export function initGlobe() {
       
       // Nigeria 3D Polygons (States)
       .polygonCapColor(d => d === hoverD 
-        ? 'rgba(28, 176, 246, 0.75)' // Neon blue on hover
-        : 'rgba(88, 204, 2, 0.35)'   // Branded semi-transparent green normally
+        ? 'rgba(28, 176, 246, 0.50)' // Neon blue on hover
+        : 'rgba(88, 204, 2, 0.15)'   // Subtle translucent green normally
       )
-      .polygonSideColor(() => 'rgba(70, 163, 2, 0.25)')
-      .polygonStrokeColor(() => '#46A302')
+      .polygonSideColor(() => 'rgba(70, 163, 2, 0.05)')
+      .polygonStrokeColor(() => 'rgba(88, 204, 2, 0.45)')
       .polygonAltitude(0.015)
       .polygonLabel(d => `
         <div style="background: var(--bg-secondary, #1B2D36); border: 2px solid var(--border, #2A3F4D); padding: 8px 12px; border-radius: 12px; color: var(--text-primary, #ECEFF1); font-family: var(--font-family); font-weight: 700; box-shadow: 0 4px 0 var(--border, #2A3F4D); pointer-events: none;">
@@ -49,7 +49,7 @@ export function initGlobe() {
       .pointLat('lat')
       .pointLng('lng')
       .pointAltitude(0.02) // Layered slightly above polygon
-      .pointRadius(() => 0.12) // Sized nicely for 37 nodes
+      .pointRadius(() => 0.07) // Sized sharply for 37 nodes
       .pointColor(() => '#1CB0F6') // Neon blue for contrast
       .pointResolution(12)
       
@@ -64,16 +64,6 @@ export function initGlobe() {
       .arcDashAnimateTime(1500)
       .arcStroke(0.6)
       .arcAltitude(0.08)
-      
-      // Labels (state names)
-      .labelLat('lat')
-      .labelLng('lng')
-      .labelText('name')
-      .labelSize(0.7) // Small size to prevent clutter across 37 states
-      .labelColor(() => isDark ? '#ECEFF1' : '#3C3C3C')
-      .labelResolution(2)
-      .labelAltitude(0.025) // Layered above points
-      .labelDotRadius(0.15)
       (container);
 
     // Fetch and apply Nigeria States GeoJSON, states list & network connections
@@ -88,9 +78,6 @@ export function initGlobe() {
 
       // Set Points (using state centroids)
       globe.pointsData(states);
-
-      // Set Labels (state names)
-      globe.labelsData(states);
 
       // Map connection list to coordinates dynamically
       const arcs = [];
@@ -112,8 +99,8 @@ export function initGlobe() {
     })
     .catch((err) => console.warn('Failed to load geographic datasets:', err));
 
-    // Focus on Nigeria (zoomed in closer from 2.5 to 1.45)
-    globe.pointOfView({ lat: 9.08, lng: 8.68, altitude: 1.45 }, 2000);
+    // Focus on Nigeria (zoomed in closer from 1.45 to 0.48)
+    globe.pointOfView({ lat: 9.08, lng: 8.68, altitude: 0.48 }, 2000);
 
     // Navigation and Interactivity
     const controls = globe.controls();
@@ -144,8 +131,8 @@ export function initGlobe() {
         const lat = sumLat / coords.length;
         const lng = sumLng / coords.length;
 
-        // Fly camera to the clicked state (altitude: 0.5 for close detail)
-        globe.pointOfView({ lat, lng, altitude: 0.5 }, 1500);
+        // Fly camera to the clicked state (altitude: 0.35 for close detail)
+        globe.pointOfView({ lat, lng, altitude: 0.35 }, 1500);
 
         // Pause sway while user is inspecting
         cancelAnimationFrame(swayInterval);
@@ -155,7 +142,7 @@ export function initGlobe() {
         // Reset view and resume sway after 6 seconds of inactivity
         swayTimeout = setTimeout(() => {
           isDragging = false;
-          globe.pointOfView({ lat: 9.08, lng: 8.68, altitude: 1.45 }, 1500);
+          globe.pointOfView({ lat: 9.08, lng: 8.68, altitude: 0.48 }, 1500);
           swayTimeout = setTimeout(startSway, 1600);
         }, 6000);
       }
@@ -177,7 +164,7 @@ export function initGlobe() {
       if (!isDragging) return;
       isDragging = false;
       swayTimeout = setTimeout(() => {
-        globe.pointOfView({ lat: 9.08, lng: 8.68, altitude: 1.45 }, 1500);
+        globe.pointOfView({ lat: 9.08, lng: 8.68, altitude: 0.48 }, 1500);
         swayTimeout = setTimeout(startSway, 1600);
       }, 3000);
     };
@@ -192,7 +179,7 @@ export function initGlobe() {
         swayAngle += 0.003;
         const lat = 9.08 + Math.sin(swayAngle * 0.5) * 0.8;
         const lng = 8.68 + Math.sin(swayAngle) * 6.0;
-        globe.pointOfView({ lat, lng, altitude: 1.45 });
+        globe.pointOfView({ lat, lng, altitude: 0.48 });
         swayInterval = requestAnimationFrame(sway);
       }
       sway();
